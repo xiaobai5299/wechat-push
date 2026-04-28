@@ -73,7 +73,7 @@ if __name__ == "__main__":
               "- 京东 (JD)：涨幅 +0.8%\n" \
               "市场分析：科技板块整体表现强劲，投资者情绪乐观。"
 
-    user = "FanZhe"
+    user = "slx"
 
     result = api.send_message(user, content)
     print("发送结果:", result)
