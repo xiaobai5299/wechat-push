@@ -1,0 +1,32 @@
+name: 发送企业微信消息
+
+on:
+  # cron-job.org 外部触发
+  repository_dispatch:
+    types: [send-message]
+
+  # 手动触发（在 GitHub Actions 页面点按钮）
+  workflow_dispatch:
+
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 运行推送脚本
+        env:
+          WECHAT_CORPID: ${{ secrets.WECHAT_CORPID }}
+          WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
+          WECHAT_AGENTID: ${{ secrets.WECHAT_AGENTID }}
+        run: python wechat_api.py
