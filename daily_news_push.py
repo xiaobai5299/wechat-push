@@ -17,13 +17,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ==================== 企业微信配置 ====================
-CORPID = "wwf1a50a26729a67e2"
-SECRET = "7oXQONowTfdzbUjuMEgENotE9mFcvfJd_OKPMZeoSSE"
-AGENTID = "1000003"
-TO_USER = "shilixu"
+CORPID = os.environ.get("WECHAT_CORPID", "")
+SECRET = os.environ.get("WECHAT_SECRET", "")
+AGENTID = os.environ.get("WECHAT_AGENTID", "")
+TO_USER = os.environ.get("WECHAT_TOUSER", "")
 
 # ==================== GitHub Pages 配置 ====================
-GITHUB_TOKEN = ""
+GITHUB_TOKEN = os.environ.get("GH_TOKEN", "")
 GITHUB_REPO = "xiaobai5299/wechat-push"
 PAGES_URL = "https://xiaobai5299.github.io/wechat-push/"
 
