@@ -1,32 +1,46 @@
-name: 发送企业微信消息
+name: 分时段新闻推送
 
 on:
-  # cron-job.org 外部触发
   repository_dispatch:
-    types: [send-message]
-
-  # 手动触发（在 GitHub Actions 页面点按钮）
+    types: [afternoon-push, morning-push]
   workflow_dispatch:
+    inputs:
+      push_mode:
+        description: '推送模式'
+        required: true
+        type: choice
+        options:
+          - afternoon
+          - morning
 
 jobs:
-  send-message:
+  push:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - run: pip install requests
 
-      - name: 安装依赖
-        run: pip install requests
-
-      - name: 运行推送脚本
+      - name: 午盘推送
+        if: github.event.action == 'afternoon-push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_mode == 'afternoon')
         env:
+          PUSH_MODE: afternoon
           WECHAT_CORPID: ${{ secrets.WECHAT_CORPID }}
           WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
           WECHAT_AGENTID: ${{ secrets.WECHAT_AGENTID }}
-        run: python wechat_api.py
+          WECHAT_TOUSER: ${{ secrets.WECHAT_TOUSER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python daily_news_push.py
+
+      - name: 盘前推送
+        if: github.event.action == 'morning-push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_mode == 'morning')
+        env:
+          PUSH_MODE: morning
+          WECHAT_CORPID: ${{ secrets.WECHAT_CORPID }}
+          WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
+          WECHAT_AGENTID: ${{ secrets.WECHAT_AGENTID }}
+          WECHAT_TOUSER: ${{ secrets.WECHAT_TOUSER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python daily_news_push.py
