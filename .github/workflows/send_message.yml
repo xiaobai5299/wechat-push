@@ -42,5 +42,5 @@ jobs:
           WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
           WECHAT_AGENTID: ${{ secrets.WECHAT_AGENTID }}
           WECHAT_TOUSER: ${{ secrets.WECHAT_TOUSER }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python daily_news_push.py
